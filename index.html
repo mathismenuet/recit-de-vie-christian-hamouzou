@@ -9,7 +9,7 @@
       content="Page familiale de présentation du récit de vie de Christian, avec film, chapitres et ressources à télécharger."
     >
     <meta name="robots" content="noindex,nofollow">
-    <link rel="preconnect" href="https://www.youtube-nocookie.com">
+    <link rel="preconnect" href="https://www.youtube.com">
     <link rel="preconnect" href="https://img.youtube.com">
     <link rel="stylesheet" href="styles.css">
   </head>
@@ -132,8 +132,11 @@
         <div class="video-shell">
           <iframe
             id="main-video"
-            src="https://www.youtube-nocookie.com/embed/Zb5O5A5VZYE?enablejsapi=1&rel=0&modestbranding=1"
+            src="about:blank"
+            data-youtube-id="Zb5O5A5VZYE"
+            data-youtube-js-api="true"
             title="Christian nous raconte"
+            referrerpolicy="strict-origin-when-cross-origin"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>
@@ -159,8 +162,17 @@
           </div>
         </div>
 
+        <div class="chapter-status" data-chapter-status aria-live="polite">
+          <span class="chapter-status-index" data-chapter-status-index>01</span>
+          <div>
+            <strong data-chapter-status-title>Entrer dans le récit</strong>
+            <span data-chapter-status-time>00:00</span>
+          </div>
+        </div>
+
         <div class="timeline" data-timeline>
           <div class="timeline-axis" aria-hidden="true"></div>
+          <div class="timeline-progress" data-timeline-progress aria-hidden="true"></div>
           <div class="chapter-track" data-chapter-track></div>
         </div>
       </section>
@@ -275,8 +287,10 @@
         </div>
         <div class="video-shell secondary-video">
           <iframe
-            src="https://www.youtube-nocookie.com/embed/LIIzHxx70iQ?rel=0&modestbranding=1"
+            src="about:blank"
+            data-youtube-id="LIIzHxx70iQ"
             title="Interview complète de Christian"
+            referrerpolicy="strict-origin-when-cross-origin"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>

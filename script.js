@@ -8,6 +8,34 @@ function unlockSite() {
   document.querySelector("main")?.removeAttribute("aria-hidden");
   document.querySelector(".site-footer")?.removeAttribute("aria-hidden");
   document.body.style.overflow = "";
+  initializeYouTubeEmbeds();
+}
+
+function getEmbedOrigin() {
+  if (window.location.origin && window.location.origin !== "null") {
+    return window.location.origin;
+  }
+
+  return "https://recit-de-vie-christian-hamouzou.vercel.app";
+}
+
+function initializeYouTubeEmbeds() {
+  document.querySelectorAll("[data-youtube-id]").forEach((videoFrame) => {
+    if (videoFrame.dataset.loaded === "true") return;
+
+    const params = new URLSearchParams({
+      rel: "0",
+      modestbranding: "1",
+      origin: getEmbedOrigin()
+    });
+
+    if (videoFrame.dataset.youtubeJsApi === "true") {
+      params.set("enablejsapi", "1");
+    }
+
+    videoFrame.src = `https://www.youtube.com/embed/${videoFrame.dataset.youtubeId}?${params.toString()}`;
+    videoFrame.dataset.loaded = "true";
+  });
 }
 
 function setupAccessGate() {
@@ -94,15 +122,26 @@ const chapters = [
 
 const track = document.querySelector("[data-chapter-track]");
 const timeline = document.querySelector("[data-timeline]");
+const chapterStatusIndex = document.querySelector("[data-chapter-status-index]");
+const chapterStatusTitle = document.querySelector("[data-chapter-status-title]");
+const chapterStatusTime = document.querySelector("[data-chapter-status-time]");
 const iframe = document.querySelector("#main-video");
+let activeChapterIndex = 0;
 
 function renderChapters() {
   if (!track) return;
 
   track.innerHTML = chapters
     .map(
-      (chapter) => `
-        <button class="chapter-card" type="button" data-seek="${chapter.seconds}">
+      (chapter, index) => `
+        <button
+          class="chapter-card${index === activeChapterIndex ? " is-active" : ""}"
+          type="button"
+          data-seek="${chapter.seconds}"
+          data-chapter-index="${index}"
+          style="--index: ${index}"
+          aria-label="Aller au chapitre ${index + 1}, ${chapter.title}, ${chapter.time}"
+        >
           <span class="chapter-time">${chapter.time}</span>
           <h3>${chapter.title}</h3>
           <p>${chapter.text}</p>
@@ -110,6 +149,34 @@ function renderChapters() {
       `
     )
     .join("");
+}
+
+function updateActiveChapter(index, shouldScroll = false) {
+  activeChapterIndex = Math.min(chapters.length - 1, Math.max(0, index));
+  const chapter = chapters[activeChapterIndex];
+
+  track?.querySelectorAll(".chapter-card").forEach((card, cardIndex) => {
+    card.classList.toggle("is-active", cardIndex === activeChapterIndex);
+  });
+
+  if (chapterStatusIndex) {
+    chapterStatusIndex.textContent = String(activeChapterIndex + 1).padStart(2, "0");
+  }
+  if (chapterStatusTitle) {
+    chapterStatusTitle.textContent = chapter.title;
+  }
+  if (chapterStatusTime) {
+    chapterStatusTime.textContent = chapter.time;
+  }
+  if (timeline) {
+    timeline.style.setProperty("--chapter-progress", String(activeChapterIndex / (chapters.length - 1)));
+  }
+
+  if (shouldScroll) {
+    track
+      ?.querySelector(`[data-chapter-index="${activeChapterIndex}"]`)
+      ?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }
 }
 
 function seekVideo(seconds) {
@@ -141,8 +208,15 @@ function setupChapterClicks() {
     const card = event.target.closest("[data-seek]");
     if (!card) return;
 
+    updateActiveChapter(Number(card.dataset.chapterIndex), false);
     seekVideo(Number(card.dataset.seek));
     document.querySelector("#film")?.scrollIntoView({ block: "start", behavior: "smooth" });
+  });
+
+  track.addEventListener("focusin", (event) => {
+    const card = event.target.closest("[data-chapter-index]");
+    if (!card) return;
+    updateActiveChapter(Number(card.dataset.chapterIndex), false);
   });
 }
 
@@ -150,9 +224,11 @@ function setupTimelineMotion() {
   if (!timeline || !track) return;
 
   let rafId = 0;
+  let scrollRafId = 0;
+  const canUseHoverPan = window.matchMedia("(pointer: fine)").matches;
 
   timeline.addEventListener("pointermove", (event) => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!canUseHoverPan || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
@@ -162,22 +238,43 @@ function setupTimelineMotion() {
       track.scrollLeft = maxScroll * ratio;
     });
   });
+
+  track.addEventListener("scroll", () => {
+    cancelAnimationFrame(scrollRafId);
+    scrollRafId = requestAnimationFrame(() => {
+      const cards = [...track.querySelectorAll(".chapter-card")];
+      if (!cards.length) return;
+
+      const trackCenter = track.getBoundingClientRect().left + track.clientWidth / 2;
+      const closestIndex = cards.reduce(
+        (closest, card, index) => {
+          const rect = card.getBoundingClientRect();
+          const distance = Math.abs(rect.left + rect.width / 2 - trackCenter);
+          return distance < closest.distance ? { index, distance } : closest;
+        },
+        { index: activeChapterIndex, distance: Number.POSITIVE_INFINITY }
+      ).index;
+
+      if (closestIndex !== activeChapterIndex) {
+        updateActiveChapter(closestIndex, false);
+      }
+    });
+  });
 }
 
 function setupScrollButtons() {
   document.querySelectorAll("[data-scroll-chapters]").forEach((button) => {
     button.addEventListener("click", () => {
       const direction = Number(button.dataset.scrollChapters);
-      track?.scrollBy({
-        left: direction * Math.min(420, track.clientWidth * 0.75),
-        behavior: "smooth"
-      });
+      const nextIndex = Math.min(chapters.length - 1, Math.max(0, activeChapterIndex + direction));
+      updateActiveChapter(nextIndex, true);
     });
   });
 }
 
 setupAccessGate();
 renderChapters();
+updateActiveChapter(0, false);
 setupChapterClicks();
 setupTimelineMotion();
 setupScrollButtons();
