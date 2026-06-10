@@ -39,9 +39,9 @@ export default function AccessGate({ onUnlock }: Props) {
         className={`relative z-10 w-full max-w-md p-8 sm:p-10 mx-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl transition-transform duration-700 ease-out ${unlocked ? 'scale-95 translate-y-8' : 'scale-100 translate-y-0'}`}
       >
         <p className="text-heading-accent text-sm font-semibold tracking-wider uppercase mb-2">Espace familial</p>
-        <h1 className="text-3xl sm:text-4xl font-normal text-white mb-4 tracking-tight" style={{ fontFamily: '"Neue Haas Grotesk Display Pro 55 Roman", sans-serif' }}>Récit de vie de Christian</h1>
+        <h1 className="text-3xl sm:text-4xl font-normal text-white mb-4 tracking-tight" style={{ fontFamily: '"Neue Haas Grotesk Display Pro 55 Roman", sans-serif' }}>Papi Jean nous raconte</h1>
         <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-8 font-inter">
-          Cette page rassemble le film, les chapitres et les fichiers du projet. Entrez le code transmis à la famille pour continuer.
+          (ses souvenirs, ses histoires, sa vie) - Entrez le code pour accéder à la page.
         </p>
 
         <div className="space-y-4">

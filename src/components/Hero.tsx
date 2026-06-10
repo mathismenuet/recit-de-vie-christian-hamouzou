@@ -32,7 +32,7 @@ export default function Hero() {
       <nav className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 md:px-10 py-4 sm:py-6">
         <div className="flex items-center gap-2 text-medium-dark-green">
           <span className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight" style={{ fontFamily: '"Neue Haas Grotesk Display Pro 55 Roman", sans-serif' }}>
-            Récit de vie
+            Papi Jean
           </span>
         </div>
 
@@ -131,13 +131,13 @@ export default function Hero() {
           className="font-normal leading-[0.95] text-heading-primary text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[5.5rem] xl:text-[6.5rem] max-w-5xl"
           style={{ fontFamily: '"Neue Haas Grotesk Display Pro 55 Roman", "Helvetica Neue", Helvetica, Arial, sans-serif', letterSpacing: '-0.035em' }}
         >
-          Jean <br className="block sm:hidden" />
+          Papi Jean <br className="block sm:hidden" />
           <span className="text-heading-accent">
-            nous<br className="hidden sm:block" /> raconte...
+            nous<br className="hidden sm:block" /> raconte
           </span>
         </h1>
-        <p className="mt-6 sm:mt-8 text-body-green text-sm sm:text-base md:text-lg leading-relaxed max-w-lg px-2 font-inter font-medium">
-          Famille, entourage, cette page vous est dédiée. Vous trouverez ici l'ensemble du projet réalisé autour de l'interview de Jean avec ses petits-enfants.
+        <p className="mt-6 sm:mt-8 text-body-green text-lg sm:text-xl md:text-2xl leading-relaxed max-w-lg px-2 font-inter font-medium">
+          (ses souvenirs, ses histoires, sa vie)
         </p>
       </div>
 
