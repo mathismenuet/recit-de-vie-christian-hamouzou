@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Play, Sparkles, Menu, X, ArrowRight } from 'lucide-react';
+import { Play, Menu, X, ArrowRight } from 'lucide-react';
 import BoomerangVideoBg from './BoomerangVideoBg';
 
 const BG_VIDEO =
